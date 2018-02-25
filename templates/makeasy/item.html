@@ -72,14 +72,14 @@
         <div id="3Dscene" style="float:left;width:100%;height:90%;z-index: 1;"></div>
     </div>
 
-    <div id='footer' style="height:50px;position:absolute;bottom:0;right:5;z-index:3;">
-        <img class="svg camera" src="{%static 'images/view_front.svg' %}" onclick=rotateCamera('front')>
-        <img class="svg camera" src="{%static 'images/view_top.svg' %}"   onclick=rotateCamera('top')>
-        <img class="svg camera" src="{%static 'images/view_right.svg' %}" onclick=rotateCamera('right')>
-        <img class="svg camera" src="{%static 'images/view_rear.svg' %}"  onclick=rotateCamera('rear')>
-        <img class="svg camera" src="{%static 'images/view_bottom.svg' %}"onclick=rotateCamera('bottom')>
-        <img class="svg camera" src="{%static 'images/view_left.svg' %}"  onclick=rotateCamera('left')>
-        <img src="{%static 'images/soldinisnc.png' %}" style="opacity:0.8;margin-left:15px; float:right;padding:2px; width:119px; height:39px;">
+    <div id='footer' style="height:50px;position:absolute;bottom:0px;right:5px;z-index:3;">
+        <img class="svg camera" src="{%static 'webres/static/img/view_front.svg' %}" onclick=rotateCamera('front')>
+        <img class="svg camera" src="{%static 'webres/static/img/view_top.svg' %}"   onclick=rotateCamera('top')>
+        <img class="svg camera" src="{%static 'webres/static/img/view_right.svg' %}" onclick=rotateCamera('right')>
+        <img class="svg camera" src="{%static 'webres/static/img/view_rear.svg' %}"  onclick=rotateCamera('rear')>
+        <img class="svg camera" src="{%static 'webres/static/img/view_bottom.svg' %}"onclick=rotateCamera('bottom')>
+        <img class="svg camera" src="{%static 'webres/static/img/view_left.svg' %}"  onclick=rotateCamera('left')>
+        <img src="{%static 'webres/static/img/soldinisnc.png' %}" style="opacity:0.8;margin-left:15px; float:right;padding:2px; width:119px; height:39px;">
     </div>
 
 
@@ -229,23 +229,23 @@
             $.ajax({
             url: "new",
             type: "POST",
-            data: {'newproject':projectname,'csrfmiddlewaretoken':csrftoken},
+            data: {'prj_name':projectname,'csrfmiddlewaretoken':csrftoken},
             dataType: "json",
             success:function(result)
                    {
                     console.log(result)
-                    if (result.projectname!='')
+                    if (result.prj_name!='')
                     {
                         meForm.enableMenuOption('Costi');
                         meForm.enableMenuOption('Produzione');
                         meForm.updateMenu();
 
 
-                        localStorage.setItem('prj_script',result.scripts);
-                        localStorage.setItem('form_data',result.form);
-                        localStorage.setItem('prj_data',result.prj_data);
+                        localStorage.setItem('prj_script',result.prj_script);
+                        localStorage.setItem('form_data',JSON.stringify(result.form_data));
+                        localStorage.setItem('prj_data',JSON.stringify(result.prj_data));
                         localStorage.setItem('prj_title',result.prj_title);
-                        localStorage.setItem('prj_name',result.projectname);
+                        localStorage.setItem('prj_name',result.prj_name);
                         location.reload(false);
 
                     }

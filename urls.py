@@ -1,5 +1,8 @@
-from django.conf.urls import url
+import sys
+sys.path.append(u'/home/worksite/PyApp/makEasy/')
 
+
+from django.conf.urls import url
 from . import views
 from . import ajax
 
