@@ -51,7 +51,7 @@
         <div class='param'
              style="display:block;
                     z-index:3;
-                    overflow-y:auto;
+                    overflow-y:hidden;
                     overflow-x:hidden;
                     direction:ltr;">
 
@@ -365,7 +365,6 @@
              else {alert("Problemi nel caricamento del file!");}
         }
 
-
     function action_savePrj()
     {
       var data = JSON.stringify(localStorage,null,'\t');
@@ -373,14 +372,12 @@
       saveAs(blob, "ITEM.mePrj");
     }
 
-
     function action_archivia()
       {
         update_item();
         var blob = new Blob([localStorage.item], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "ITEM.meItem");
       }
-
 
     </script>
 
@@ -393,7 +390,9 @@
         meForm.enableMenuOption('Costi');
         meForm.enableMenuOption('Produzione');
         meForm.updateMenu();
-        $("#prjScript").replaceWith(localStorage.getItem('prj_script'));
+        var hS="<script id='prjScript'>"+localStorage.getItem('prj_script')+'</'+'script>'
+        //$("#prjScript").replaceWith(localStorage.getItem('prj_script'));
+        $("script#prjScript").replaceWith(hS);
         meForm.deployForm('projects',
                           localStorage.getItem('prj_title'),
                           JSON.parse(localStorage.form_data),

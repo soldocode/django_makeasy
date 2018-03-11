@@ -13,7 +13,7 @@ def new(request):
 
         # load form structure
         f = open(prj_folder+prj_path+'/form.json', 'r')
-        form_data=json.load(f)
+        data=json.load(f)
         f.close()
 
         # load js functions
@@ -27,8 +27,9 @@ def new(request):
         f.close()
 
         data = dict(prj_name=prj_name,
-                    form_data=form_data,
+                    form_data=data["form_data"],
                     prj_script=prj_script,
-                    prj_data=prj_data)
+                    prj_data=prj_data,
+                    prj_title=prj.Title)
 
         return JsonResponse(data)
