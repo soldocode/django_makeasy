@@ -1,6 +1,8 @@
 {% load static %}
 <!DOCTYPE html>
 
+<html style='overflow-y:hidden;'>
+
 <head>
     <title>makEasy</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -9,7 +11,7 @@
     <script src='{%static "webres/static/js/meForm.js" %}'></script>
     <script src='{%static "webres/static/js/meTHREEitems.js" %}'></script>
     <script src="https://cdn.jsdelivr.net/npm/clipper-js@1.0.2/lib/index.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.8.1/jquery.serializejson.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/85/three.min.js"></script>
     <script src="https://rawgit.com/mrdoob/three.js/master/examples/js/controls/OrthographicTrackballControls.js"></script>
@@ -69,7 +71,7 @@
                 </table>
             </form>
         </div>
-        <div id="3Dscene" style="float:left;width:100%;height:90%;z-index: 1;"></div>
+        <div id="3Dscene" style="float:left;width:100%;height:90vh;z-index: 1;"></div>
     </div>
 
     <div id='footer' style="height:50px;position:absolute;bottom:0px;right:5px;z-index:3;">
@@ -404,3 +406,4 @@
 
 
 </body>
+</html>

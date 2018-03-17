@@ -3,7 +3,9 @@ from django.http import JsonResponse
 import json
 import makEasy
 
-prj_folder=u'/home/worksite/PyApp/makEasy/Projects/'
+me_folder=u'/home/worksite/PyApp/makEasy/'
+prj_folder=me_folder+'Projects/'
+
 
 def new(request):
     if (request.method == "POST" and request.POST['prj_name']):
@@ -33,3 +35,16 @@ def new(request):
                     prj_title=prj.Title)
 
         return JsonResponse(data)
+
+
+def getJson(request):
+    path=me_folder+request.POST['jsonPath']
+    source={}
+    #load json structure
+    f = open(path, 'r')
+    source=f.read()
+    f.close()
+    data= dict(source=source,path=path)
+    #data=dict(msg='Chiamata eseguita',source={})
+    return  JsonResponse(data)
+

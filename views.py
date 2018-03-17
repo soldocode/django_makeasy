@@ -6,7 +6,6 @@ sys.path.append(u'/home/worksite/PyApp/mystuff/')
 sys.path.append(u'/home/worksite/PyApp/makEasy/')
 import makEasy
 
-
 def index(request):
     return render(request, 'makeasy/index.html')
 
