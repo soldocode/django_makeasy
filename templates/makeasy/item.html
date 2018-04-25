@@ -18,7 +18,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/16.3.5/Tween.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-
+    <script src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.min.js"></script>
 
     <script>
         var csrftoken = Cookies.get('csrftoken');
@@ -225,7 +225,6 @@
     function action_nuovo(projectname)
     {
         clear_all();
-        console.log(csrftoken);
 
         //invio chiamata ajax
             $.ajax({
@@ -274,17 +273,17 @@
        var param={"data_form":$("#data_form").serializeJSON({useIntKeysAsArrayIndex: true})}
        //invio una chiamata ajax
        $.ajax({
-           url: "{%static 'item/exportDXF'%}",
+           url: "item/exportDXF",
            type: "POST",
            data: {'jsonstring':JSON.stringify(param),
-                  'name':localStorage.getItem('prj_name')},
+                  'name':localStorage.getItem('prj_name'),
+                  'csrfmiddlewaretoken':csrftoken},
            dataType: "json",
            success:function(result)
                    {
-                    var blob = new Blob(result, {type: "text/plain;charset=utf-8"});
+                    var blob = new Blob(result.dxf);
                     saveAs(blob, "ITEM.DXF");
                    }
-
             })
       }
 
@@ -311,10 +310,11 @@
 
        //ajax call
        $.ajax({
-           url: "{%static 'item/createItem' %}",
+           url: "createItem",
            type: "POST",
            data: {'jsonstring':localStorage.prj_data,
-                  'name':localStorage.prj_name},
+                  'name':localStorage.prj_name,
+                  'csrfmiddlewaretoken':csrftoken},
            dataType: "json",
            success:function(result)
                    {

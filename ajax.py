@@ -2,6 +2,7 @@ from django.http import JsonResponse
 
 import json
 import makEasy
+import jsonpickle
 
 me_folder=u'/home/worksite/PyApp/makEasy/'
 prj_folder=me_folder+'Projects/'
@@ -47,4 +48,25 @@ def getJson(request):
     data= dict(source=source,path=path)
     #data=dict(msg='Chiamata eseguita',source={})
     return  JsonResponse(data)
+
+
+def createItem(request):
+    meItem='{}'
+    if request.POST['name']:
+        prj_data=json.loads(request.POST['jsonstring'])
+        item=makEasy.newItemFromProject(request.POST['name'],prj_data)
+        meItem=jsonpickle.encode(item)
+    return JsonResponse(dict(meItem=meItem))
+
+
+def exportDXF(request):
+    dxf=''
+    if request.POST['name']:
+        data=json.loads(request.POST['jsonstring'])
+        item=makEasy.newItemFromProject(request.POST['name'],data['data_form'])
+        wf=item.WorkFlow
+        for ws in wf:
+            if ws.Work.Class=='PlasmaCut':
+                dxf=ws.getDXF()
+    return JsonResponse(dict(dxf=[dxf]))
 

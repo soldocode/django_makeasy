@@ -11,4 +11,6 @@ urlpatterns = [
     url(r'item/create$', views.item, name='item'),
     url(r'new', ajax.new),
     url(r'getJson', ajax.getJson),
+    url(r'createItem',ajax.createItem),
+    url(r'exportDXF',ajax.exportDXF),
 ]
