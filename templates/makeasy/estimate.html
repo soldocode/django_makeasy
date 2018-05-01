@@ -33,7 +33,7 @@
        function updateObjects(){};
     </script>
     <style>
-        div.header, #menu ul li, ul a.menu, .makEasy th, span.glyphicon {background-color: #8cb3d9; color:  #204060;}
+        div.header, #menu ul li, ul a.menu, .makEasy th, span.glyphicon {background-color: #66ccaa; color:#194d3c}
         img.camera {width:36px;height:36px;cursor:pointer;}
     </style>
 
@@ -62,7 +62,7 @@
             <h2 id="title" style="margin-left:10px; width: 100%;"> </h2>
             <div class='vertical_scrollbar_left' style="width:100%;">
             <form action="#" enctype="multipart/form-data" id="data_form" method="post">
-                <table id="projects"
+                <table id="estimate"
                        class='makEasy'
                        style="direction:ltr;
                               width:100%;
@@ -94,6 +94,7 @@
 
 
     <script>
+        // $(".param").wrap( "<div class='vertical_scrollbar_left'></div>" );
         $.serializeJSON.defaultOptions.parseAll = true;
     </script>
 
@@ -162,50 +163,14 @@
 
     <script id="menuScript">
     meForm.loadMenu
-                 ({"Progetti":
-                       {"on_click":"action_nuovo('')",
-                        "child":
-                            {
-                             "Carica Progetto":
-                               {
-                                "on_click":"$('#selectfiles').trigger('click')",
-                                "show":true
-                               },
-                               "Salva Progetto":
-                               {
-                                "on_click":"action_savePrj()",
-                                "show":true
-                               },
-                            "----------------":{"show":true},
-                            "Piastra":
-                               {
-                                "on_click":"action_nuovo('Piastra')",
-                                "show":true
-                               },
-                            "Flangia Circolare":
-                               {
-                                "on_click":"action_nuovo('CircularFlange')",
-                                "show":true
-                               },
-                            "Tronco di Cono":
-                               {
-                                "on_click":"action_nuovo('Tronco di Cono')",
-                                "show":true
-                               },
-                            "Profilo da Lamiera":
-                               {
-                                "on_click":"action_nuovo('Lamiera Piegata')",
-                                "show":true
-                               }
-                            },
-                       "show":true
-                      },
-                  "Costi":{"show":false,"on_click":"location.href = 'estimate';"},
+                 ({"Torna al Progetto":
+                       {"on_click":"location.href = 'create';",
+                        "show":true},
+                  "Costi":{"show":false},
                   "Produzione":{"show":false,
                                 "child":
                                 {
                                     "Esporta DXF taglio":{"show":true,"on_click":"action_esportaDXF()"},
-                                    "Esporta STL":{"show":true,"on_click":"action_esportaSTL()"},
                                     "Ordina Prodotto":{"show":false}
                                 }
                                }
@@ -325,7 +290,7 @@
            dataType: "json",
            success:function(result)
                    {
-                    localStorage.setItem('item',result.item);
+                    localStorage.setItem('item',JSON.stringify(result,null,4));
                    },
             complete:function(result)
                   {
@@ -382,30 +347,82 @@
     }
 
     function action_archivia()
-      {
+    {
         update_item();
         var blob = new Blob([localStorage.item], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "ITEM.meItem");
-      }
-
-    </script>
+    }
 
 
-    <script>
+    function deployForm(id)
+    {
+        $("h2#title").text(localStorage.prj_title);
+        $("table#estimate tbody").html("<tr></tr>");
+        item=JSON.parse(localStorage.item)
+        work_flow=item.WorkFlow
+        mat_cl={name:'material',label:'materiali',rows:[]}
+        mat_text=MATERIALS[item.ClassProperties.Material].name
+        mat_text+=' sp'+item.ClassProperties.Thickness+' mm'
+        mat_cl.rows.push({'title':mat_text})
+        $('#estimate tr:last').before(meForm.editCheckList(mat_cl))
+        work_cl={name:'works',label:'lavorazioni',rows:[]}
+        for (i in work_flow){work_cl.rows.push({'title':work_flow[i].Work.Title})}
+        $('#estimate tr:last').before(meForm.editCheckList(work_cl))
+        quantity_field={name:'quantity',label:'quantità richieste',width:25}
+        $('#estimate tr:last').before(meForm.editNumber(quantity_field,1))
+        email_field={name:'email',label:'e-mail',width:100}
+        $('#estimate tr:last').before(meForm.editString(email_field))
+        $('#'+id).on("change",function(){update_all()})
+        btns={"request_offer":{"title":"Richiedi Offerta","arg":""}}
+        $('#estimate tr:last').before(meForm.TR_BUTTONS('offer',btns,3))
+    }
+
+
+    function request_offer()
+    {
+        //raccolgo dati form in struttura json
+        var param={"data_form":$("#data_form").serializeJSON({useIntKeysAsArrayIndex: true})}
+        //invio una chiamata ajax
+        $.ajax({
+            url: "/makeasy/item/sendOffer",
+            type: "POST",
+            data: {'offer':JSON.stringify(param),
+                   'prj_name':localStorage.prj_name,
+                   'item':localStorage.item,
+                   'csrfmiddlewaretoken':csrftoken,
+                   'prj_data':localStorage.prj_data
+                   },
+            dataType: "json",
+            success:function(result)
+            {
+               alert(result.msg);
+            }
+        })
+    }
+
 
     if (localStorage.prj_data)
     {
-        meForm.afterDeployForm=function(){update_all();};
-        meForm.enableMenuOption('Costi');
         meForm.enableMenuOption('Produzione');
         meForm.updateMenu();
         var hS="<script id='prjScript'>"+localStorage.getItem('prj_script')+'</'+'script>'
         $("script#prjScript").replaceWith(hS);
-        meForm.deployForm('projects',
-                          localStorage.getItem('prj_title'),
-                          JSON.parse(localStorage.form_data),
-                          JSON.parse(localStorage.prj_data));
-        update_shape();
+
+        $.ajax(
+        {
+            url: "/makeasy/item/getJson",
+            type: "POST",
+            data: {'jsonPath': "Materials/material_quality.json",
+                   'csrfmiddlewaretoken':csrftoken},
+            dataType: "json",
+            success:function(result)
+            {
+                console.log('getJSON ok');
+                MATERIALS = JSON.parse(result.source)
+                deployForm('estimate')
+                update_shape();
+            }
+        })
     }
 
     </script>
