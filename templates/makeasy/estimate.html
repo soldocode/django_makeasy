@@ -290,7 +290,8 @@
            dataType: "json",
            success:function(result)
                    {
-                    localStorage.setItem('item',JSON.stringify(result,null,4));
+                    //localStorage.setItem('item',JSON.stringify(result,null,4));
+                    localStorage.setItem('item',result.item);
                    },
             complete:function(result)
                   {
