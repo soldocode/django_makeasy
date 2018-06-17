@@ -108,7 +108,7 @@ def sendOffer(request):
 
     html=''
     html+="<p>"
-    html+="Buongiorno,<br>Vi inviamo offerta per la fornitura di:<br><br>"
+    html+="Buongiorno,<br>Vi comunichiamo offerta per la fornitura di:<br><br>"
     html+="Nr "+str(offer['data_form']['quantity'])+" "
     html+=item.Project.Title
     html+=" con le seguenti caratteristiche:<br>"
@@ -117,10 +117,13 @@ def sendOffer(request):
     html+="<p>"
     html+="Sono comprese le seguenti lavorazioni:"
     html+="<ul>"
-    for v in offer['data_form']['works']:
-        html+="<li>"+json.dumps(v)+"</li>"
+    for v in range(0,len(offer['data_form']['works'])):
+        w=offer['data_form']['works']
+        if json.loads(w[v])['selected']=='true':
+            html+="<li>"+wf[v].Work.Title+"</li>"
     html+="</ul>"
     html+="</p>"
+    html+="<p>"
 
     result=requests.post(
         "https://api.mailgun.net/v3/carpenteriasoldini.it/messages",
